@@ -132,6 +132,29 @@ Use this project if you need to answer questions like:
 - How much operational cost can be reduced without collapsing routing quality?
 - Which routing policy is most robust under high-load or bursty conditions?
 
+## Research Findings
+
+This repository was developed as part of an empirical study on queue-aware routing for issue triage.
+
+What we found:
+
+- Plain `QA-FTOPSIS` did not consistently beat a strong `classifier_only` baseline.
+- The positive result appeared when routing was made hierarchical on real Jira data.
+- The strongest gains came when queues formed meaningful families of closely related tasks rather than completely unrelated destinations.
+- In that setting, `qa_ftopsis_hierarchical` improved average operational cost and macro-F1 on the real Jira benchmark.
+- The method did not consistently improve tail metrics such as `p95` and `p99`, so the result is positive but conditional.
+
+Where it works best:
+
+- when tasks are similar but not identical,
+- when the classifier already identifies the right queue family,
+- when the final decision is between nearby specialist queues,
+- when queue pressure and service risk are useful tie-breakers between close alternatives.
+
+Intuition:
+
+The classifier finds the right neighborhood. The hierarchical queue-aware policy picks the best house inside that neighborhood.
+
 ## Citation
 
 If you use this repository in academic work, cite the associated manuscript or link back to this project once the paper record is finalized.
