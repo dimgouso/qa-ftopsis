@@ -1,0 +1,17 @@
+issue_id,change_time,field_name,old_value,new_value,change_author_mask
+ISSUE-1,2025-01-01T10:00:00+00:00,component,Security,Frontend,user_a
+ISSUE-4,2025-01-04T13:00:00+00:00,component,Security,Frontend,user_a
+ISSUE-7,2025-01-01T11:00:00+00:00,component,Security,Frontend,user_a
+ISSUE-10,2025-01-04T14:00:00+00:00,component,Security,Frontend,user_a
+ISSUE-11,2025-01-01T10:00:00+00:00,component,Frontend,Platform,user_a
+ISSUE-14,2025-01-04T13:00:00+00:00,component,Frontend,Platform,user_a
+ISSUE-17,2025-01-01T11:00:00+00:00,component,Frontend,Platform,user_a
+ISSUE-20,2025-01-04T14:00:00+00:00,component,Frontend,Platform,user_a
+ISSUE-21,2025-01-01T10:00:00+00:00,component,Platform,Billing,user_a
+ISSUE-24,2025-01-04T13:00:00+00:00,component,Platform,Billing,user_a
+ISSUE-27,2025-01-01T11:00:00+00:00,component,Platform,Billing,user_a
+ISSUE-30,2025-01-04T14:00:00+00:00,component,Platform,Billing,user_a
+ISSUE-31,2025-01-01T10:00:00+00:00,component,Billing,Security,user_a
+ISSUE-34,2025-01-04T13:00:00+00:00,component,Billing,Security,user_a
+ISSUE-37,2025-01-01T11:00:00+00:00,component,Billing,Security,user_a
+ISSUE-40,2025-01-04T14:00:00+00:00,component,Billing,Security,user_a

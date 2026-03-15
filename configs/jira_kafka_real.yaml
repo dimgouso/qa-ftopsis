@@ -1,0 +1,114 @@
+paths:
+  input_csv: ../artifacts/benchmarks/jira_kafka_real/jira_router_benchmark.parquet
+  prepared_dir: ../artifacts/prepared/jira_kafka_real
+  model_dir: ../artifacts/models/jira_kafka_real
+  run_root: ../artifacts/runs
+  report_root: ../artifacts/reports
+
+data:
+  random_state: 7
+  dataset_profile: jira_public
+  priority_mapping:
+    lowest: low
+    low: low
+    minor: low
+    trivial: low
+    medium: medium
+    major: medium
+    normal: medium
+    high: high
+    highest: high
+    critical: high
+    blocker: high
+  stratify_fields: [queue]
+
+model:
+  word_ngram_range: [1, 2]
+  char_ngram_range: [3, 5]
+  word_max_features: 40000
+  char_max_features: 30000
+  max_iter: 1000
+  sublinear_tf: true
+  prepend_language_token: false
+
+simulation:
+  queue_discipline: fifo
+  slot_order: serve_then_arrive
+  serve_new_same_slot: false
+  capacity_mode: empirical_service_demand
+  seeds: [11, 17, 23]
+  primary_sla:
+    high: 3
+    medium: 6
+    low: 10
+  robustness_sla:
+    high: 2
+    medium: 5
+    low: 8
+  scenarios:
+    normal:
+      lambda_base: 8
+      rho_target: 0.75
+    high_load:
+      lambda_base: 11
+      rho_target: 0.95
+    bursty:
+      lambda_base: 9
+      rho_target: 0.82
+      burst_lambda: 16
+      burst_interval: 9
+      burst_start_offset: 3
+  environment_matrix:
+    service_models: [empirical]
+    delay_modes: [embedding_kappa, learned_jira_delay]
+
+skill_features:
+  model_name: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  max_length: 256
+  batch_size: 64
+  device: cpu
+  kappa_min: 0.8
+  kappa_max: 1.4
+
+jira:
+  raw_issues_path: ../artifacts/benchmarks/jira_kafka_real/raw_issues.parquet
+  raw_history_path: ../artifacts/benchmarks/jira_kafka_real/raw_history.parquet
+  benchmark_dir: ../artifacts/benchmarks/jira_kafka_real
+  api_base_url: https://issues.apache.org/jira
+  project_key: KAFKA
+  max_issues: 2000
+  page_size: 50
+  queue_field: component
+  min_queue_size: 40
+  queue_top_n: 10
+  slot_hours: 24
+  max_service_units: 80
+  resolution_target: time_to_resolution_hours
+
+delay_model:
+  model_type: random_forest
+  n_estimators: 160
+  max_depth: 8
+  min_samples_leaf: 2
+
+routing:
+  topk_gate:
+    enabled: true
+    k: 2
+    policy_names: [qa_ftopsis, jsq]
+
+tuning:
+  alpha_grid: [0.25, 0.5, 1.0, 2.0]
+  qa_guard_thresholds: [null, 0.7, 0.8, 0.85, 0.9]
+  qa_weights:
+    - [0.30, 0.40, 0.30]
+    - [0.25, 0.35, 0.40]
+    - [0.35, 0.40, 0.25]
+    - [0.20, 0.25, 0.55]
+    - [0.15, 0.20, 0.65]
+    - [0.10, 0.15, 0.75]
+  hybrid_mix_grid: [0.15, 0.25, 0.40, 0.50]
+  selection_scenarios: [high_load, bursty]
+
+reporting:
+  explainability_sample_size: 100

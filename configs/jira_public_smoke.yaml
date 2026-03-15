@@ -1,0 +1,96 @@
+paths:
+  input_csv: ../artifacts/benchmarks/jira_public_smoke/jira_router_benchmark.parquet
+  prepared_dir: ../artifacts/prepared/jira_public_smoke
+  model_dir: ../artifacts/models/jira_public_smoke
+  run_root: ../artifacts/runs
+  report_root: ../artifacts/reports
+
+data:
+  random_state: 7
+  dataset_profile: jira_public
+  priority_mapping:
+    lowest: low
+    low: low
+    minor: low
+    trivial: low
+    medium: medium
+    major: medium
+    normal: medium
+    high: high
+    highest: high
+    critical: high
+    blocker: high
+  stratify_fields: [queue]
+
+model:
+  word_ngram_range: [1, 2]
+  char_ngram_range: [3, 5]
+  word_max_features: 300
+  char_max_features: 300
+  max_iter: 300
+  sublinear_tf: true
+  prepend_language_token: false
+
+simulation:
+  queue_discipline: fifo
+  slot_order: serve_then_arrive
+  serve_new_same_slot: false
+  capacity_mode: uniform_one
+  seeds: [13]
+  primary_sla:
+    high: 3
+    medium: 6
+    low: 10
+  robustness_sla:
+    high: 2
+    medium: 5
+    low: 8
+  scenarios:
+    high_load:
+      lambda_base: 3
+      rho_target: 0.85
+  environment_matrix:
+    service_models: [empirical]
+    delay_modes: [embedding_kappa, learned_jira_delay]
+
+skill_features:
+  model_name: hashing-mock
+  max_length: 64
+  batch_size: 16
+  device: cpu
+  kappa_min: 0.8
+  kappa_max: 1.4
+
+jira:
+  raw_issues_path: ../sample_data/jira_public_smoke/jira_issues.csv
+  raw_history_path: ../sample_data/jira_public_smoke/jira_history.csv
+  benchmark_dir: ../artifacts/benchmarks/jira_public_smoke
+  instance_filter: [apache-jira]
+  queue_field: component
+  min_queue_size: 4
+  slot_hours: 8
+  max_service_units: 12
+  resolution_target: time_to_resolution_hours
+
+delay_model:
+  model_type: random_forest
+  n_estimators: 32
+  max_depth: 6
+  min_samples_leaf: 1
+
+routing:
+  topk_gate:
+    enabled: true
+    k: 2
+    policy_names: [qa_ftopsis, jsq]
+
+tuning:
+  alpha_grid: [0.5, 1.0]
+  qa_guard_thresholds: [null, 0.6]
+  qa_weights:
+    - [0.30, 0.40, 0.30]
+    - [0.25, 0.35, 0.40]
+  selection_scenarios: [high_load]
+
+reporting:
+  explainability_sample_size: 10

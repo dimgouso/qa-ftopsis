@@ -1,0 +1,74 @@
+paths:
+  input_csv: ../archive(3)/dataset-tickets-multi-lang-4-20k.csv
+  prepared_dir: ../artifacts/prepared/default
+  model_dir: ../artifacts/models/default
+  run_root: ../artifacts/runs
+  report_root: ../artifacts/reports
+
+data:
+  random_state: 7
+
+model:
+  word_ngram_range: [1, 2]
+  char_ngram_range: [3, 5]
+  word_max_features: 40000
+  char_max_features: 30000
+  max_iter: 1000
+  sublinear_tf: true
+  prepend_language_token: true
+
+simulation:
+  queue_discipline: fifo
+  slot_order: serve_then_arrive
+  serve_new_same_slot: false
+  seeds: [11, 17, 23, 29, 37]
+  primary_sla:
+    high: 3
+    medium: 6
+    low: 10
+  robustness_sla:
+    high: 2
+    medium: 5
+    low: 8
+  scenarios:
+    normal:
+      lambda_base: 25
+      rho_target: 0.70
+    high_load:
+      lambda_base: 32
+      rho_target: 0.90
+    bursty:
+      lambda_base: 22
+      rho_target: 0.70
+      burst_lambda: 50
+      burst_interval: 11
+  environment_matrix:
+    service_models: [deterministic, heavy_tail]
+    delay_modes: [redundant_baseline, embedding_kappa]
+  heavy_tail:
+    pareto_alpha: 1.5
+    base_poisson_bias: 0.25
+    base_poisson_scale: 0.75
+    long_job_prob_base: 0.08
+    long_job_prob_scale: 0.20
+    max_service_units: 20
+
+skill_features:
+  model_name: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  max_length: 256
+  batch_size: 64
+  device: cpu
+  kappa_min: 0.8
+  kappa_max: 1.4
+
+tuning:
+  alpha_grid: [0.25, 0.5, 1.0, 2.0]
+  qa_guard_thresholds: [null, 0.6, 0.7, 0.8]
+  qa_weights:
+    - [0.30, 0.40, 0.30]
+    - [0.25, 0.35, 0.40]
+    - [0.35, 0.40, 0.25]
+  selection_scenarios: [high_load, bursty]
+
+reporting:
+  explainability_sample_size: 100

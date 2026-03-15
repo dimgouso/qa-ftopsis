@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qa-ftopsis"
+version = "0.1.0"
+description = "Research-grade queue-aware routing toolkit for hierarchical fuzzy issue triage and simulation."
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = [
+  "queue-routing",
+  "issue-routing",
+  "fuzzy-topsis",
+  "jira",
+  "triage",
+  "simulation",
+  "benchmarking",
+  "operations-research",
+  "machine-learning",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+  "joblib>=1.4",
+  "matplotlib>=3.9",
+  "numpy>=2.0",
+  "pandas>=2.2",
+  "pyarrow>=18.0",
+  "PyYAML>=6.0",
+  "scikit-learn>=1.7",
+  "scipy>=1.14",
+  "seaborn>=0.13",
+  "torch>=2.0",
+  "transformers>=4.57",
+  "typer>=0.16",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0",
+]
+
+[project.scripts]
+qa-ftopsis = "qa_ftopsis.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/dimgouso/qa-ftopsis"
+Repository = "https://github.com/dimgouso/qa-ftopsis"
+Issues = "https://github.com/dimgouso/qa-ftopsis/issues"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["qa_ftopsis*"]
