@@ -13,6 +13,21 @@
 
 QA-FTOPSIS is a deterministic Python package and CLI for studying when queue-aware routing improves over a strong text classifier. It combines text classification, queue simulation, hierarchical queue families, fuzzy TOPSIS decision logic, and reporting for reproducible experiments on issue-routing datasets.
 
+## How It Works
+
+```mermaid
+flowchart LR
+    A["Raw tickets or Jira issues"] --> B["Benchmark construction<br/>splits, queue labels, queue families"]
+    B --> C["Text classifier<br/>calibrated queue probabilities"]
+    B --> D["Queue-aware features<br/>skill signals, delay proxies, backlog state"]
+    C --> E["Routing policies<br/>Classifier / MaxWeight / QA-FTOPSIS / Hierarchical"]
+    D --> E
+    E --> F["Queue simulation<br/>normal, high-load, bursty, tail-sensitive"]
+    F --> G["Reports and paper assets<br/>avg_cost, macro-F1, p95, p99, SLA, confusion summaries"]
+```
+
+The workflow is: build a routing benchmark, train the classifier, enrich decisions with queue-aware signals, run policies under simulated load, and compare operational outcomes.
+
 ## What This Project Does
 
 - Builds routing benchmarks from real issue-tracking data, including Jira exports and API pulls.
